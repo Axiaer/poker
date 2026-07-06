@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <!-- 让 Web App 全屏、隐藏浏览器栏 -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="theme-color" content="#1a1a2e" />
-    <title>扑克牌收集器</title>
-    <link rel="manifest" id="dynamicManifest" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>扑克牌收集器 - 亮牌版</title>
     <style>
-        /* ===== 全局样式 (基于你的原版，微调适配移动端手感) ===== */
+        /* ===== 全局重置 & 基础 ===== */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -34,6 +29,7 @@
             width: 100%;
             margin: 0 auto;
         }
+        /* ===== 头部 ===== */
         .header {
             display: flex;
             flex-wrap: wrap;
@@ -60,8 +56,8 @@
             color: #f6d365;
         }
         .reset-btn {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
             color: #e8d5b5;
             padding: 6px 18px;
             border-radius: 30px;
@@ -70,25 +66,25 @@
             transition: 0.25s;
             backdrop-filter: blur(4px);
             font-weight: 500;
-            letter-spacing: 0.3px;
             touch-action: manipulation;
         }
         .reset-btn:hover {
-            background: rgba(255, 70, 70, 0.25);
-            border-color: rgba(255, 100, 100, 0.4);
+            background: rgba(255,70,70,0.25);
+            border-color: rgba(255,100,100,0.4);
             color: #ffb3b3;
         }
         .reset-btn:active {
             transform: scale(0.95);
         }
+        /* ===== 进度条 ===== */
         .progress-section {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(8px);
             border-radius: 18px;
             padding: 18px 20px 20px;
             margin-bottom: 22px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
         }
         .progress-top {
             display: flex;
@@ -102,10 +98,6 @@
             font-size: 15px;
             font-weight: 500;
             color: #d4c5b0;
-        }
-        .progress-label strong {
-            color: #f6d365;
-            font-weight: 700;
         }
         .progress-stats {
             font-size: 15px;
@@ -123,11 +115,10 @@
         .progress-bar-wrap {
             width: 100%;
             height: 8px;
-            background: rgba(255, 255, 255, 0.10);
+            background: rgba(255,255,255,0.10);
             border-radius: 20px;
             overflow: hidden;
             margin: 10px 0 4px;
-            position: relative;
         }
         .progress-bar {
             height: 100%;
@@ -135,7 +126,7 @@
             border-radius: 20px;
             background: linear-gradient(90deg, #f6d365, #fda085);
             transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 16px rgba(253, 160, 133, 0.25);
+            box-shadow: 0 0 16px rgba(253,160,133,0.25);
         }
         .suit-stats {
             display: flex;
@@ -143,7 +134,7 @@
             gap: 8px 16px;
             margin-top: 12px;
             padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255,255,255,0.06);
             font-size: 14px;
             color: #c4b8a5;
         }
@@ -160,7 +151,7 @@
             display: inline-block;
             width: 48px;
             height: 4px;
-            background: rgba(255, 255, 255, 0.10);
+            background: rgba(255,255,255,0.10);
             border-radius: 10px;
             overflow: hidden;
             margin-left: 2px;
@@ -176,315 +167,227 @@
             min-width: 18px;
             display: inline-block;
         }
-        .filter-bar {
+        /* ===== 花色分组标题 ===== */
+        .suit-group {
+            margin-bottom: 20px;
+        }
+        .suit-header {
             display: flex;
+            align-items: center;
             gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #b0a392;
-            padding: 5px 18px;
-            border-radius: 30px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.25s;
-            font-weight: 500;
-            touch-action: manipulation;
-        }
-        .filter-btn:hover {
-            background: rgba(255, 255, 255, 0.10);
+            font-size: 18px;
+            font-weight: 600;
             color: #e8d5b5;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding-bottom: 6px;
         }
-        .filter-btn.active {
-            background: rgba(246, 211, 101, 0.18);
-            border-color: rgba(246, 211, 101, 0.35);
+        .suit-header .symbol {
+            font-size: 24px;
+        }
+        .suit-header .count-badge {
+            font-size: 14px;
+            color: #8a7e6b;
+            font-weight: 400;
+            margin-left: auto;
+        }
+        .suit-header .count-badge span {
             color: #f6d365;
         }
-        .filter-btn .badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 0 8px;
-            font-size: 12px;
-            margin-left: 4px;
-            color: #b0a392;
-        }
-        .filter-btn.active .badge {
-            background: rgba(246, 211, 101, 0.15);
-            color: #f6d365;
-        }
-        .grid {
+        /* ===== 牌网格（每行13张） ===== */
+        .card-row {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
-            gap: 10px;
-            margin-top: 2px;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 6px;
         }
-        .card {
+        /* ===== 单张牌（亮/暗） ===== */
+        .card-item {
             aspect-ratio: 2.5 / 3.5;
-            border-radius: 12px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.25s ease,
-                background 0.25s ease,
-                border-color 0.25s ease;
+            transition: all 0.2s ease;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            position: relative;
-            background: #2a2a3e;
-            border: 2px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
-            font-weight: 600;
-            text-align: center;
-            padding: 4px;
-            min-height: 92px;
             touch-action: manipulation;
+            border: 2px solid transparent;
+            background: #2a2a3e;
+            color: #5a4f3e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            position: relative;
+            padding: 2px;
         }
-        .card:active {
-            transform: scale(0.94);
+        /* 未收集：暗淡 */
+        .card-item.dim {
+            background: #242436;
+            border-color: rgba(255,255,255,0.04);
+            color: #4a3f2e;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            filter: brightness(0.5) saturate(0.3);
         }
-        .card.back {
-            background: linear-gradient(145deg, #2d2d44, #1e1e32);
-            border-color: rgba(255, 255, 255, 0.06);
+        .card-item.dim .rank,
+        .card-item.dim .suit-symbol {
+            opacity: 0.2;
         }
-        .card.back .back-pattern {
-            font-size: 32px;
-            opacity: 0.15;
-            letter-spacing: 2px;
-            line-height: 1;
-            color: #8a7e6b;
-        }
-        .card.back .back-label {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.15);
-            margin-top: 4px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-        .card.back .card-rank,
-        .card.back .card-suit,
-        .card.back .card-joker-label {
-            display: none;
-        }
-        .card.front {
+        /* 已收集：亮起 */
+        .card-item.lit {
             background: #fcf7f0;
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 215, 140, 0.15);
+            border-color: #f6d365;
+            box-shadow: 0 0 20px rgba(246, 211, 101, 0.3), 0 4px 12px rgba(0,0,0,0.4);
+            color: #1a1a2e;
+            transform: scale(1.02);
         }
-        .card.front .back-pattern,
-        .card.front .back-label {
-            display: none;
+        .card-item.lit .rank,
+        .card-item.lit .suit-symbol {
+            opacity: 1;
         }
-        .card-rank {
-            font-size: 20px;
-            font-weight: 700;
+        /* 牌面文字 */
+        .rank {
+            font-size: 16px;
             line-height: 1;
-            margin-bottom: 0px;
-            letter-spacing: -0.5px;
+            font-weight: 700;
         }
-        .card-suit {
-            font-size: 34px;
+        .suit-symbol {
+            font-size: 20px;
             line-height: 1;
             margin-top: -2px;
         }
-        .card-joker-label {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            line-height: 1.3;
-        }
-        .card-joker-sub {
-            font-size: 12px;
-            font-weight: 400;
-            opacity: 0.6;
-            margin-top: 2px;
-        }
-        .card.color-red .card-rank,
-        .card.color-red .card-suit {
+        /* 颜色区分 */
+        .card-item.lit.color-red .rank,
+        .card-item.lit.color-red .suit-symbol {
             color: #d32f2f;
         }
-        .card.color-black .card-rank,
-        .card.color-black .card-suit {
+        .card-item.lit.color-black .rank,
+        .card-item.lit.color-black .suit-symbol {
             color: #1a1a2e;
         }
-        .card.color-joker .card-joker-label {
+        .card-item.lit.color-joker .rank,
+        .card-item.lit.color-joker .suit-symbol {
             color: #c9a84c;
         }
-        .card.color-joker .card-joker-sub {
-            color: #8a7e6b;
-        }
-        .card.front::after {
+        /* 已收集的小对勾 */
+        .card-item.lit::after {
             content: "✓";
             position: absolute;
-            top: 4px;
-            right: 7px;
-            font-size: 12px;
-            color: rgba(46, 125, 50, 0.45);
-            font-weight: 700;
-            opacity: 0.6;
+            top: 2px;
+            right: 5px;
+            font-size: 10px;
+            color: #2e7d32;
+            opacity: 0.7;
         }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6a5f4e;
-            font-size: 16px;
-            grid-column: 1 / -1;
+        /* 大小王特殊样式 */
+        .card-item.joker .rank {
+            font-size: 14px;
         }
-        .empty-state .big-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.4;
+        .card-item.joker .suit-symbol {
+            font-size: 18px;
         }
-        .card.just-collected {
+        /* 点击反馈 */
+        .card-item:active {
+            transform: scale(0.92);
+        }
+        /* 动画 */
+        .card-item.just-collected {
             animation: pop 0.35s ease;
         }
         @keyframes pop {
-            0% {
-                transform: scale(1);
-            }
-            40% {
-                transform: scale(1.12);
-                box-shadow: 0 0 30px rgba(246, 211, 101, 0.35);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            40% { transform: scale(1.15); box-shadow: 0 0 30px rgba(246,211,101,0.5); }
+            100% { transform: scale(1.02); }
         }
-        .num.bump {
-            animation: bump 0.3s ease;
+        /* ===== 空状态（不可能为空，但保留） ===== */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6a5f4e;
         }
-        @keyframes bump {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-        }
+        /* ===== 响应式调整 ===== */
         @media (max-width: 600px) {
-            body {
-                padding: 10px 8px 30px;
+            .card-item {
+                font-size: 11px;
+                border-radius: 6px;
             }
-            .title {
-                font-size: 20px;
+            .rank {
+                font-size: 13px;
             }
-            .title span {
-                font-size: 22px;
-            }
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-                gap: 8px;
-            }
-            .card {
-                min-height: 78px;
-                border-radius: 10px;
-                padding: 3px;
-            }
-            .card-rank {
+            .suit-symbol {
                 font-size: 16px;
             }
-            .card-suit {
-                font-size: 26px;
+            .card-row {
+                gap: 4px;
             }
-            .card-joker-label {
-                font-size: 14px;
-            }
-            .card.back .back-pattern {
-                font-size: 24px;
-            }
-            .card.front::after {
-                font-size: 10px;
-                top: 3px;
-                right: 5px;
-            }
-            .progress-section {
-                padding: 14px 14px 16px;
-            }
-            .suit-stats .suit-progress {
-                width: 36px;
-            }
-            .filter-btn {
-                font-size: 12px;
-                padding: 4px 14px;
-            }
-            .reset-btn {
-                font-size: 12px;
-                padding: 5px 14px;
+            .suit-header {
+                font-size: 16px;
             }
         }
         @media (max-width: 400px) {
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
-                gap: 6px;
+            .card-item {
+                font-size: 10px;
+                border-radius: 4px;
             }
-            .card {
-                min-height: 68px;
-                border-radius: 8px;
+            .rank {
+                font-size: 11px;
             }
-            .card-rank {
+            .suit-symbol {
                 font-size: 14px;
             }
-            .card-suit {
-                font-size: 22px;
-            }
-            .card.back .back-pattern {
-                font-size: 18px;
+            .card-row {
+                gap: 3px;
             }
         }
         @media (min-width: 700px) {
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
-                gap: 12px;
+            .card-item {
+                font-size: 18px;
+                border-radius: 10px;
             }
-            .card {
-                min-height: 108px;
+            .rank {
+                font-size: 20px;
             }
-            .card-rank {
-                font-size: 24px;
-            }
-            .card-suit {
-                font-size: 40px;
+            .suit-symbol {
+                font-size: 28px;
             }
         }
-        .hidden {
-            display: none !important;
+        /* ===== 工具类 ===== */
+        .hidden { display: none !important; }
+        .num.bump { animation: bump 0.3s ease; }
+        @keyframes bump {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
     </style>
 </head>
 <body>
     <div class="app" id="app">
+        <!-- 头部 -->
         <header class="header">
             <div class="title"><span>🃏</span> 扑克牌收集器</div>
             <button class="reset-btn" id="resetBtn">🗑 重置</button>
         </header>
+        <!-- 进度 -->
         <section class="progress-section">
             <div class="progress-top">
                 <span class="progress-label">🎯 收集进度</span>
                 <span class="progress-stats">
                     <span class="num" id="collectedNum">0</span>
                     <span class="total"> / 54</span>
-                    <span style="margin-left:6px;color:#8a7e6b;font-weight:400;">·</span>
+                    <span style="margin-left:6px;color:#8a7e6b;">·</span>
                     <span style="margin-left:6px;color:#d4c5b0;" id="percentText">0%</span>
                 </span>
             </div>
             <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%;"></div></div>
             <div class="suit-stats" id="suitStats"></div>
         </section>
-        <div class="filter-bar">
-            <button class="filter-btn active" data-filter="all">全部 <span class="badge" id="countAll">54</span></button>
-            <button class="filter-btn" data-filter="collected">✅ 已收集 <span class="badge" id="countCollected">0</span></button>
-            <button class="filter-btn" data-filter="uncollected">⬜ 未收集 <span class="badge" id="countUncollected">54</span></button>
-        </div>
-        <div class="grid" id="cardGrid"></div>
-        <div style="text-align:center;margin-top:28px;font-size:13px;color:#5a4f3e;letter-spacing:0.3px;border-top:1px solid rgba(255,255,255,0.04);padding-top:20px;">
-            💡 点击卡片切换 · 数据自动保存在本地
+        <!-- 牌组容器（按花色分组） -->
+        <div id="cardContainer"></div>
+        <!-- 底部提示 -->
+        <div style="text-align:center;margin-top:28px;font-size:13px;color:#5a4f3e;border-top:1px solid rgba(255,255,255,0.04);padding-top:20px;">
+            💡 点击牌切换收集状态 · 数据自动保存本地
         </div>
     </div>
 
@@ -492,94 +395,14 @@
         (function() {
             'use strict';
 
-            // ============================================================
-            //  1. 自动生成 PWA Manifest (让手机桌面图标生效)
-            // ============================================================
-            (function generateManifestAndIcon() {
-                try {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 512;
-                    canvas.height = 512;
-                    const ctx = canvas.getContext('2d');
-
-                    // 绘制扑克牌风格图标
-                    const grd = ctx.createLinearGradient(0, 0, 512, 512);
-                    grd.addColorStop(0, '#1a1a2e');
-                    grd.addColorStop(1, '#2d2d44');
-                    ctx.fillStyle = grd;
-                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                    ctx.shadowBlur = 30;
-                    ctx.beginPath();
-                    ctx.roundRect(40, 40, 432, 432, 80);
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                    // 边框
-                    ctx.strokeStyle = '#f6d365';
-                    ctx.lineWidth = 12;
-                    ctx.beginPath();
-                    ctx.roundRect(40, 40, 432, 432, 80);
-                    ctx.stroke();
-
-                    // 红心
-                    ctx.fillStyle = '#d32f2f';
-                    ctx.font = 'bold 240px "Segoe UI", "Arial Unicode MS", sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('♥', 256, 220);
-                    // A
-                    ctx.fillStyle = '#f0e6d3';
-                    ctx.font = 'bold 180px "Segoe UI", "Arial Unicode MS", sans-serif';
-                    ctx.fillText('A', 256, 380);
-
-                    const iconDataURL = canvas.toDataURL('image/png');
-
-                    const manifest = {
-                        name: '扑克牌收集器',
-                        short_name: '扑克收集',
-                        start_url: window.location.href.split('?')[0],
-                        display: 'standalone',
-                        background_color: '#1a1a2e',
-                        theme_color: '#1a1a2e',
-                        icons: [{
-                            src: iconDataURL,
-                            sizes: '512x512',
-                            type: 'image/png',
-                            purpose: 'any maskable'
-                        }]
-                    };
-
-                    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.getElementById('dynamicManifest');
-                    if (link) {
-                        link.href = url;
-                    }
-                } catch (e) {
-                    console.log('Manifest 生成跳过（不影响核心功能）');
-                }
-            })();
-
-            // roundRect polyfill 兼容
-            if (!CanvasRenderingContext2D.prototype.roundRect) {
-                CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, radii) {
-                    const r = typeof radii === 'number' ? radii : (radii || 0);
-                    this.moveTo(x + r, y);
-                    this.arcTo(x + w, y, x + w, y + h, r);
-                    this.arcTo(x + w, y + h, x, y + h, r);
-                    this.arcTo(x, y + h, x, y, r);
-                    this.arcTo(x, y, x + w, y, r);
-                    return this;
-                };
-            }
-
-            // ============================================================
-            //  2. 核心逻辑 (同原版，保留全部功能)
-            // ============================================================
-            const SUITS = ['spade', 'heart', 'club', 'diamond'];
+            // ============ 数据定义 ============
+            const SUITS = ['spade', 'heart', 'diamond', 'club'];
+            const SUIT_SYMBOL = { spade: '♠', heart: '♥', diamond: '♦', club: '♣' };
+            const SUIT_COLOR = { spade: 'black', heart: 'red', diamond: 'red', club: 'black' };
+            const SUIT_LABEL = { spade: '黑桃', heart: '红桃', diamond: '方片', club: '梅花' };
             const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-            const SUIT_SYMBOL = { spade: '♠', heart: '♥', club: '♣', diamond: '♦' };
-            const SUIT_COLOR = { spade: 'black', heart: 'red', club: 'black', diamond: 'red' };
 
+            // 生成所有牌（含大小王）
             function buildDeck() {
                 const deck = [];
                 for (const suit of SUITS) {
@@ -593,8 +416,9 @@
             }
             const ALL_CARDS = buildDeck();
             const TOTAL = ALL_CARDS.length;
-            const STORAGE_KEY = 'poker_collection_v2';
 
+            // ============ 存储 ============
+            const STORAGE_KEY = 'poker_collection_v2';
             function loadCollected() {
                 try {
                     const raw = localStorage.getItem(STORAGE_KEY);
@@ -604,174 +428,177 @@
                     return new Set(arr);
                 } catch (_) { return new Set(); }
             }
-
             function saveCollected(set) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
             }
 
             let collected = loadCollected();
-            let currentFilter = 'all';
 
-            const grid = document.getElementById('cardGrid');
+            // ============ DOM 缓存 ============
+            const container = document.getElementById('cardContainer');
             const progressBar = document.getElementById('progressBar');
             const collectedNum = document.getElementById('collectedNum');
             const percentText = document.getElementById('percentText');
             const suitStats = document.getElementById('suitStats');
-            const countAll = document.getElementById('countAll');
-            const countCollected = document.getElementById('countCollected');
-            const countUncollected = document.getElementById('countUncollected');
             const resetBtn = document.getElementById('resetBtn');
 
-            function getCardDisplay(card) {
-                if (card.isJoker) {
-                    const label = card.jokerType === 'big' ? '大王' : '小王';
-                    const sub = card.jokerType === 'big' ? '🃏' : '🃏';
-                    return { rankText: '', suitText: '', jokerLabel: label, jokerSub: sub, colorClass: 'color-joker',
-                        displaySuit: '🃏' };
-                }
-                return {
-                    rankText: card.rank,
-                    suitText: SUIT_SYMBOL[card.suit] || '?',
-                    jokerLabel: '',
-                    jokerSub: '',
-                    colorClass: SUIT_COLOR[card.suit] === 'red' ? 'color-red' : 'color-black',
-                    displaySuit: SUIT_SYMBOL[card.suit] || '?'
-                };
-            }
-
+            // ============ 渲染函数 ============
             function render() {
-                let allCount = 0,
-                    collectedCount = 0,
-                    uncollectedCount = 0;
-                const suitMap = {};
-                for (const s of SUITS) suitMap[s] = { total: 0, collected: 0 };
-                suitMap.joker = { total: 0, collected: 0 };
+                // 统计
+                let totalCollected = 0;
+                const suitCount = {};
+                for (const s of SUITS) suitCount[s] = { total: 13, collected: 0 };
+                suitCount.joker = { total: 2, collected: 0 };
 
                 for (const card of ALL_CARDS) {
-                    allCount++;
                     const isCollected = collected.has(card.id);
-                    if (isCollected) collectedCount++;
-                    else uncollectedCount++;
-                    const key = card.isJoker ? 'joker' : card.suit;
-                    suitMap[key].total++;
-                    if (isCollected) suitMap[key].collected++;
+                    if (isCollected) {
+                        totalCollected++;
+                        const key = card.isJoker ? 'joker' : card.suit;
+                        suitCount[key].collected++;
+                    }
                 }
 
-                const pct = allCount > 0 ? Math.round((collectedCount / allCount) * 100) : 0;
+                // 更新进度
+                const pct = Math.round((totalCollected / TOTAL) * 100);
                 progressBar.style.width = pct + '%';
-                collectedNum.textContent = collectedCount;
+                collectedNum.textContent = totalCollected;
                 percentText.textContent = pct + '%';
-                countAll.textContent = allCount;
-                countCollected.textContent = collectedCount;
-                countUncollected.textContent = uncollectedCount;
 
-                let suitHTML = '';
+                // 花色统计
+                let statsHTML = '';
                 for (const s of SUITS) {
-                    const data = suitMap[s];
-                    const pct2 = data.total > 0 ? Math.round((data.collected / data.total) * 100) : 0;
-                    const symbol = SUIT_SYMBOL[s] || '?';
+                    const data = suitCount[s];
+                    const pctS = data.total > 0 ? Math.round((data.collected / data.total) * 100) : 0;
+                    const symbol = SUIT_SYMBOL[s];
                     const color = SUIT_COLOR[s] === 'red' ? '#d32f2f' : '#1a1a2e';
-                    suitHTML += `
+                    statsHTML += `
                         <span class="item">
                             <span class="suit-icon" style="color:${color}">${symbol}</span>
                             <span class="count">${data.collected}</span>
                             <span style="color:#6a5f4e;font-size:12px;">/ ${data.total}</span>
                             <span class="suit-progress">
-                                <span class="fill" style="width:${pct2}%;background:${color};opacity:0.6;"></span>
+                                <span class="fill" style="width:${pctS}%;background:${color};opacity:0.6;"></span>
                             </span>
                         </span>
                     `;
                 }
-                const jokerData = suitMap.joker;
-                const jokerPct = jokerData.total > 0 ? Math.round((jokerData.collected / jokerData.total) * 100) : 0;
-                suitHTML += `
+                // 大小王
+                const jokerData = suitCount.joker;
+                const pctJ = jokerData.total > 0 ? Math.round((jokerData.collected / jokerData.total) * 100) : 0;
+                statsHTML += `
                     <span class="item">
                         <span class="suit-icon" style="color:#c9a84c;">🃏</span>
                         <span class="count">${jokerData.collected}</span>
                         <span style="color:#6a5f4e;font-size:12px;">/ ${jokerData.total}</span>
                         <span class="suit-progress">
-                            <span class="fill" style="width:${jokerPct}%;background:#c9a84c;opacity:0.6;"></span>
+                            <span class="fill" style="width:${pctJ}%;background:#c9a84c;opacity:0.6;"></span>
                         </span>
                     </span>
                 `;
-                suitStats.innerHTML = suitHTML;
+                suitStats.innerHTML = statsHTML;
 
+                // ========== 生成牌组 ==========
                 let html = '';
-                let visibleCount = 0;
-                for (const card of ALL_CARDS) {
-                    const isCollected = collected.has(card.id);
-                    if (currentFilter === 'collected' && !isCollected) continue;
-                    if (currentFilter === 'uncollected' && isCollected) continue;
-                    visibleCount++;
-                    const disp = getCardDisplay(card);
-                    const cardClass = isCollected ? 'front' : 'back';
-                    const colorClass = isCollected ? disp.colorClass : '';
-                    let content = '';
-                    if (card.isJoker) {
-                        if (isCollected) {
-                            content =
-                                `<div class="card-joker-label">${disp.jokerLabel}</div><div class="card-joker-sub">${disp.jokerSub}</div>`;
-                        } else {
-                            content = `<div class="back-pattern">🃏</div><div class="back-label">?</div>`;
-                        }
-                    } else {
-                        if (isCollected) {
-                            content = `<div class="card-rank">${disp.rankText}</div><div class="card-suit">${disp.suitText}</div>`;
-                        } else {
-                            content = `<div class="back-pattern">♠♥♣♦</div><div class="back-label">?</div>`;
-                        }
+
+                // 1. 普通花色
+                for (const suit of SUITS) {
+                    const cards = ALL_CARDS.filter(c => c.suit === suit);
+                    const collectedInSuit = suitCount[suit].collected;
+                    const totalInSuit = suitCount[suit].total;
+                    const symbol = SUIT_SYMBOL[suit];
+                    const color = SUIT_COLOR[suit] === 'red' ? 'color-red' : 'color-black';
+
+                    html += `<div class="suit-group">`;
+                    html += `<div class="suit-header">
+                                <span class="symbol" style="color:${SUIT_COLOR[suit] === 'red' ? '#d32f2f' : '#1a1a2e'}">${symbol}</span>
+                                ${SUIT_LABEL[suit]}
+                                <span class="count-badge">已收集 <span>${collectedInSuit}</span> / ${totalInSuit}</span>
+                             </div>`;
+                    html += `<div class="card-row">`;
+
+                    for (const card of cards) {
+                        const isLit = collected.has(card.id);
+                        const litClass = isLit ? 'lit' : 'dim';
+                        const colorClass = isLit ? color : '';
+                        const rankDisplay = card.rank;
+                        const suitSymbol = SUIT_SYMBOL[card.suit];
+                        html += `
+                            <div class="card-item ${litClass} ${colorClass}" data-id="${card.id}">
+                                <span class="rank">${rankDisplay}</span>
+                                <span class="suit-symbol">${suitSymbol}</span>
+                            </div>
+                        `;
                     }
+                    html += `</div></div>`;
+                }
+
+                // 2. 大小王（单独一行）
+                const jokers = ALL_CARDS.filter(c => c.isJoker);
+                html += `<div class="suit-group">`;
+                html += `<div class="suit-header">
+                            <span class="symbol" style="color:#c9a84c;">🃏</span>
+                            大王小王
+                            <span class="count-badge">已收集 <span>${jokerData.collected}</span> / ${jokerData.total}</span>
+                         </div>`;
+                html += `<div class="card-row">`;
+                for (const card of jokers) {
+                    const isLit = collected.has(card.id);
+                    const litClass = isLit ? 'lit' : 'dim';
+                    const colorClass = isLit ? 'color-joker' : '';
+                    const label = card.jokerType === 'big' ? '大王' : '小王';
                     html += `
-                        <div class="card ${cardClass} ${colorClass}" data-id="${card.id}" role="button" tabindex="0">
-                            ${content}
+                        <div class="card-item joker ${litClass} ${colorClass}" data-id="${card.id}">
+                            <span class="rank">${label}</span>
+                            <span class="suit-symbol">🃏</span>
                         </div>
                     `;
                 }
-                if (visibleCount === 0) {
-                    grid.innerHTML =
-                        `<div class="empty-state"><div class="big-icon">🃏</div><p>当前筛选条件下没有牌</p><p style="font-size:13px;margin-top:6px;color:#5a4f3e;">试试切换筛选条件</p></div>`;
-                } else {
-                    grid.innerHTML = html;
+                // 补齐剩余格子（保持网格整齐），最多13列，现在有2个，补11个空白占位
+                const remaining = 13 - jokers.length;
+                for (let i = 0; i < remaining; i++) {
+                    html += `<div style="visibility:hidden;"></div>`;
                 }
+                html += `</div></div>`;
+
+                container.innerHTML = html;
+
+                // 重新绑定点击事件（事件委托）
+                // 使用全局监听，但我们需要在渲染后绑定（已经通过委托绑定在容器上）
             }
 
-            // 事件委托
-            grid.addEventListener('click', function(e) {
-                const cardEl = e.target.closest('.card');
+            // ============ 事件委托（点击卡片） ============
+            container.addEventListener('click', function(e) {
+                const cardEl = e.target.closest('.card-item');
                 if (!cardEl) return;
                 const id = cardEl.dataset.id;
                 if (!id) return;
+
                 const isCollected = collected.has(id);
-                if (isCollected) collected.delete(id);
-                else collected.add(id);
+                if (isCollected) {
+                    collected.delete(id);
+                } else {
+                    collected.add(id);
+                }
                 saveCollected(collected);
+
+                // 添加动画
                 cardEl.classList.remove('just-collected');
                 void cardEl.offsetWidth;
-                if (!isCollected) cardEl.classList.add('just-collected');
-                render();
+                if (!isCollected) {
+                    cardEl.classList.add('just-collected');
+                }
+
+                render(); // 重新渲染全部（保持一致性）
+
+                // 数字跳动
                 const numEl = document.getElementById('collectedNum');
                 numEl.classList.remove('bump');
                 void numEl.offsetWidth;
                 numEl.classList.add('bump');
             });
 
-            grid.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    const cardEl = e.target.closest('.card');
-                    if (cardEl) cardEl.click();
-                }
-            });
-
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentFilter = this.dataset.filter;
-                    render();
-                });
-            });
-
+            // ============ 重置 ============
             resetBtn.addEventListener('click', function() {
                 if (collected.size === 0) return;
                 if (confirm('确定要清空所有收集记录吗？此操作不可撤销！')) {
@@ -785,7 +612,9 @@
                 }
             });
 
-            render(); 
+            // ============ 初始化 ============
+            render();
+            console.log('🃏 亮牌版扑克收集器已启动！');
         })();
     </script>
 </body>
